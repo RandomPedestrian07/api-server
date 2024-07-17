@@ -61,3 +61,7 @@ app.get('/beststories', async (req, res) => {
       res.status(500).send('Error fetching new stories');
     }
   });
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
