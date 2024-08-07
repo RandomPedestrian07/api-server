@@ -11,14 +11,20 @@ app.get('/topstories', async (req, res) => {
     const topStoryIds = await topStoriesResponse.json();
 
 
-    const storyDetailsPromises = topStoryIds.map(async id => {
+    const storiesDetails =  await Promise.all (topStoryIds.map(async id => {
       const storyResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-      return storyResponse.json();
-    });
-
-    const storiesDetails = await Promise.all(storyDetailsPromises);
+      const storyData = await storyResponse.json();
+      return {
+        title: storyData.title,
+        score: storyData.score,
+        by: storyData.by,
+        id: storyData.id
+        }
+      })
+    );
 
     res.json(storiesDetails);
+
   } catch (err) {
     res.status(500).send('Error fetching top stories');
   }
@@ -30,14 +36,20 @@ app.get('/beststories', async (req, res) => {
       const bestStoryIds = await bestStoriesResponse.json();
   
   
-      const storyDetailsPromises = bestStoryIds.map(async id => {
+      const storiesDetails =  await Promise.all (bestStoryIds.map(async id => {
         const storyResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-        return storyResponse.json();
-      });
-  
-      const storiesDetails = await Promise.all(storyDetailsPromises);
-  
-      res.json(storiesDetails);
+        const storyData = await storyResponse.json();
+        return {
+          title: storyData.title,
+          score: storyData.score,
+          by: storyData.by,
+          id: storyData.id
+          }
+        })
+      );
+
+    res.json(storiesDetails);
+
     } catch (err) {
       res.status(500).send('Error fetching best stories');
     }
@@ -48,15 +60,20 @@ app.get('/beststories', async (req, res) => {
       const newStoriesResponse = await fetch('https://hacker-news.firebaseio.com/v0/newstories.json');
       const newStoryIds = await newStoriesResponse.json();
   
-  
-      const storyDetailsPromises = newStoryIds.map(async id => {
-        const storyResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-        return storyResponse.json();
-      });
-  
-      const storiesDetails = await Promise.all(storyDetailsPromises);
+      const storiesDetails =  await Promise.all (newStoryIds.map(async id => {
+      const storyResponse = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
+      const storyData = await storyResponse.json();
+      return {
+        title: storyData.title,
+        score: storyData.score,
+        by: storyData.by,
+        id: storyData.id
+        }
+      })
+    );
   
       res.json(storiesDetails);
+  
     } catch (err) {
       res.status(500).send('Error fetching new stories');
     }
